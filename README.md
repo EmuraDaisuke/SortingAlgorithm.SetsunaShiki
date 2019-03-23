@@ -1,6 +1,6 @@
 # 刹那式
 刹那式（せつなしき）は、「クイックソート種より高速」を目指した、比較安定ソートの補助アルゴリズムです。  
-[颯式（はやてしき）](https://github.com/EmuraDaisuke/SortingAlgorithm.HayateShiki)を先に読んでいただけると、より楽しめると思います。  
+[颯式（はやてしき）](https://github.com/EmuraDaisuke/SortingAlgorithm.HayateShiki)を先に読んでいただけると、より楽しめるかも知れません。  
 
 以下の特徴があります。  
 * 比較ソート
