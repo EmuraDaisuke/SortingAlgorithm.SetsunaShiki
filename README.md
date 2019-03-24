@@ -121,7 +121,7 @@ When changing the first to the maximum value for a sorted array.
 |g++|1.30654070|1.41271570|**0.02451180**|
 
 ## Worst case 2
-When the end is changed to the minimum value for a sorted array.  
+When changing the end to the minimum value for a sorted array.  
 
 ||std::sort|std::stable_sort|Setsuna-Shiki|
 |---:|---:|---:|---:|
@@ -130,7 +130,7 @@ When the end is changed to the minimum value for a sorted array.
 |g++|6.81361270|1.38467000|**0.02570930**|
 
 ## Best case
-For a sorted array, where the position is random without changing the value.  
+When the position is specified randomly without changing the value for the sorted array.  
 
 ||std::sort|std::stable_sort|Setsuna-Shiki|
 |---:|---:|---:|---:|
