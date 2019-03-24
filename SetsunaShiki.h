@@ -40,7 +40,7 @@ void Sort(T* const aSrc, std::size_t nSrc, std::size_t oChange)
             CopyLower(&aSrc[oChange], (oChange - oLower));
         } else if (nUpper && aSrc[oChange+1] < aSrc[oChange]){
             Auto oUpper = SearchUpper(&aSrc[oChange+1], nUpper, aSrc[oChange]);
-            CopyUpper(&aSrc[oChange], (oUpper - oChange));
+            CopyUpper(&aSrc[oChange], oUpper);
         }
     }
 }
