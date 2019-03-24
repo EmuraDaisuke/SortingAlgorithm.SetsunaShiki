@@ -142,3 +142,8 @@ Although the comparison between std::sort and std::stable_sort, which is an over
 If you operate well, you can get a rapid performance, but if you use it incorrectly it will be a two-edged sword.  
 
 The sort algorithm is still romantic.  
+
+<br>
+
+---
+It may be fun to read [Hayate-Shiki](https://github.com/EmuraDaisuke/SortingAlgorithm.HayateShiki).
