@@ -2,6 +2,7 @@
 
 
 #include <vector>
+#include <random>
 #include <algorithm>
 #include <memory.h>
 
@@ -11,6 +12,7 @@
 
 
 enum class eSrc {
+    Rand,
     Min,
     Max,
     Flat,
@@ -48,12 +50,24 @@ bool operator ==(const Test& s, const Test& t)
 
 void test(eSrc Src, int nTest, int nLoop, int nRepeat)
 {
+    std::random_device Seed;
+    std::mt19937 Rand(Seed());
+    std::uniform_int_distribution<> Range(0, nTest-1);
+    
     auto a = std::vector<Test>(nTest);
     for (auto n = nLoop; n; --n){
         printf("\n\n--- %d\n", nTest);
         std::size_t oChange = 0;
         
         switch (Src){
+            case eSrc::Rand:{
+                sort_t m = 0;
+                for (auto& v : a) v.m = m++;
+                
+                oChange = Range(Rand);
+                a[oChange].m = Range(Rand);
+                break;
+            }
             case eSrc::Min:{
                 sort_t m = 0;
                 for (auto& v : a) v.m = m++;
@@ -143,7 +157,7 @@ void test(eSrc Src, int nTest, int nLoop, int nRepeat)
 
 int main(int argc, char* argv[])
 {
-    eSrc Src = eSrc::Min;
+    eSrc Src = eSrc::Rand;
     test(Src,     10000, 1, 4);
     test(Src,   1000000, 1, 4);
     test(Src, 100000000, 1, 4);
