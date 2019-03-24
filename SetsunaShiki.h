@@ -1,6 +1,6 @@
 #pragma once
 // Copyright(c) 2019 Emura Daisuke
-// Apache License 2.0
+// MIT License
 
 
 
