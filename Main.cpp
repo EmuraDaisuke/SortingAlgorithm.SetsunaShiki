@@ -13,9 +13,9 @@
 
 enum class eSrc {
     Rand,
-    Min,
     Max,
-    Flat,
+    Min,
+    Nop,
 };
 
 using sort_t = float;
@@ -59,34 +59,29 @@ void test(eSrc Src, int nTest, int nLoop, int nRepeat)
         printf("\n\n--- %d\n", nTest);
         std::size_t oChange = 0;
         
+        {   // 
+            sort_t m = 0;
+            for (auto& v : a) v.m = m++;
+        }
+        
         switch (Src){
             case eSrc::Rand:{
-                sort_t m = 0;
-                for (auto& v : a) v.m = m++;
-                
                 oChange = Range(Rand);
                 a[oChange].m = Range(Rand);
                 break;
             }
-            case eSrc::Min:{
-                sort_t m = 0;
-                for (auto& v : a) v.m = m++;
-                
-                oChange = a.size()-1;
-                a[oChange].m = -1;
-                break;
-            }
             case eSrc::Max:{
-                sort_t m = 0;
-                for (auto& v : a) v.m = m++;
-                
                 oChange = 0;
                 a[oChange].m = a.size();
                 break;
             }
-            case eSrc::Flat:{
-                sort_t m = 0;
-                for (auto& v : a) v.m = m;
+            case eSrc::Min:{
+                oChange = a.size()-1;
+                a[oChange].m = -1;
+                break;
+            }
+            case eSrc::Nop:{
+                oChange = Range(Rand);
                 break;
             }
         }
