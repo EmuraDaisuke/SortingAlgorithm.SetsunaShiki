@@ -70,11 +70,12 @@ Target: x86_64-w64-mingw32
 g++ Main.cpp -O3 -o TestG++.exe
 TestG++.exe
 ~~~
+
 <br>
 
 # Average benchmark
 The following is the case of changing the random position of the sorted array to a random value.  
-The unit is seconds, the lower the number, the faster.    
+The unit is seconds, the lower the number, the faster.  
 
 ## **Msvc**
 |Array|std::sort|std::stable_sort|Setsuna-Shiki|
@@ -104,7 +105,7 @@ The following is sorted by the array [100,000,000].
 The unit is seconds, the lower the number, the faster.  
 
 ## Worst case 1
-When the top is changed to the maximum value for a sorted array.    
+When the top is changed to the maximum value for a sorted array.  
 
 ||std::sort|std::stable_sort|Setsuna-Shiki|
 |---:|---:|---:|---:|
@@ -122,7 +123,7 @@ When the end is changed to the minimum value for a sorted array.
 |g++|6.81361270|1.38467000|**0.02570930**|
 
 ## Best case
-For a sorted array, where the position is random without changing the value.    
+For a sorted array, where the position is random without changing the value.  
 
 ||std::sort|std::stable_sort|Setsuna-Shiki|
 |---:|---:|---:|---:|
