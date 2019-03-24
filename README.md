@@ -42,6 +42,13 @@ If (value above change position < Changed position value), the upper range is bi
 
 <br>
 
+# Points devised
+Even if binary search is performed to the area where the same value is continuous, stability is maintained.
+* The binary search in the lower range searches the end of the continuous area.
+* The binary search in the upper range searches the beginning of a continuous area.
+
+<br>
+
 # Build & Test
 The following environment has been verified.  
 * Windows 10 Pro 64bit
