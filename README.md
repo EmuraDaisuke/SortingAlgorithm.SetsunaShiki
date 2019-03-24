@@ -112,7 +112,7 @@ The following is sorted by the array [100,000,000].
 The unit is seconds, the lower the number, the faster.  
 
 ## Worst case 1
-When the top is changed to the maximum value for a sorted array.  
+When changing the first to the maximum value for a sorted array.  
 
 ||std::sort|std::stable_sort|Setsuna-Shiki|
 |---:|---:|---:|---:|
