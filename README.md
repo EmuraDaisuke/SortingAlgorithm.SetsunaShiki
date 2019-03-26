@@ -1,5 +1,5 @@
 # 刹那式(Setsuna-Shiki)
-Setsuna-Shiki is a new method of comparison stable sorting algorithm.  
+Setsuna-Shiki is a new method of differential sorting algorithm that applies bisection insertion sorting.  
 For a sorted array, focus on the place where the value change is made and sort very fast.  
 
 It has the following features.  
