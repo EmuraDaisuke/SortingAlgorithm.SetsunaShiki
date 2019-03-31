@@ -12,12 +12,11 @@
 
 
 namespace SetsunaShiki {
+namespace Private {
 
 
 
 // 
-
-template <class T> void Sort(T* const aSrc, std::size_t nSrc, std::size_t oChange);
 
 template <class T> std::size_t SearchLower(T* a, std::size_t n, T& v);
 template <class T> std::size_t SearchUpper(T* a, std::size_t n, T& v);
@@ -28,24 +27,6 @@ template <class T> void CopyUpper(T* p, std::size_t n);
 
 
 // 
-
-template <class T>
-void Sort(T* const aSrc, std::size_t nSrc, std::size_t oChange)
-{
-    if (aSrc && nSrc > 1 && oChange < nSrc){
-        auto nLower = oChange;
-        auto nUpper = nSrc - oChange - 1;
-        if (nLower && aSrc[oChange] < aSrc[oChange-1]){
-            Auto oLower = SearchLower(&aSrc[0], nLower, aSrc[oChange]);
-            CopyLower(&aSrc[oChange], (oChange - oLower));
-        } else if (nUpper && aSrc[oChange+1] < aSrc[oChange]){
-            Auto oUpper = SearchUpper(&aSrc[oChange+1], nUpper, aSrc[oChange]);
-            CopyUpper(&aSrc[oChange], oUpper);
-        }
-    }
-}
-
-
 
 template <class T>
 std::size_t SearchLower(T* a, std::size_t n, T& v)
@@ -100,7 +81,31 @@ void CopyUpper(T* p, std::size_t n)
     for (; n--; ++p) p[0] = std::move(p[1]);
     p[0] = std::move(v);
 }
+}
 
 
 
+// 
+
+template <class T> void Sort(T* const aSrc, std::size_t nSrc, std::size_t oChange);
+
+
+
+template <class T>
+void Sort(T* const aSrc, std::size_t nSrc, std::size_t oChange)
+{
+    using namespace Private;
+    
+    if (aSrc && nSrc > 1 && oChange < nSrc){
+        auto nLower = oChange;
+        auto nUpper = nSrc - oChange - 1;
+        if (nLower && aSrc[oChange] < aSrc[oChange-1]){
+            Auto oLower = SearchLower(&aSrc[0], nLower, aSrc[oChange]);
+            CopyLower(&aSrc[oChange], (oChange - oLower));
+        } else if (nUpper && aSrc[oChange+1] < aSrc[oChange]){
+            Auto oUpper = SearchUpper(&aSrc[oChange+1], nUpper, aSrc[oChange]);
+            CopyUpper(&aSrc[oChange], oUpper);
+        }
+    }
+}
 }
