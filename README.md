@@ -138,7 +138,6 @@ When the position is specified randomly without changing the value for the sorte
 |clang++|0.99570890|1.44735863|**0.00000031**|
 |g++|1.33114203|1.30589223|**0.00000050**|
 
-
 <br>
 
 # Finally
