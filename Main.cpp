@@ -1,6 +1,7 @@
 
 
 
+#include <cassert>
 #include <vector>
 #include <random>
 #include <algorithm>
@@ -11,11 +12,13 @@
 
 
 
-enum class eSrc {
+enum eSrc {
     Rand,
     Max,
     Min,
     Nop,
+    
+    Num,
 };
 
 using sort_t = float;
@@ -48,22 +51,24 @@ bool operator ==(const Test& s, const Test& t)
 
 
 
-void test(eSrc Src, int nTest, int nLoop, int nRepeat)
+std::size_t init(eSrc Src, std::vector<Test>& a, std::mt19937& Rand, std::uniform_int_distribution<>& Range)
 {
-    std::random_device Seed;
-    std::mt19937 Rand(Seed());
-    std::uniform_int_distribution<> Range(0, nTest-1);
-    
-    auto a = std::vector<Test>(nTest);
-    for (auto n = nLoop; n; --n){
-        printf("\n\n--- %d\n", nTest);
-        std::size_t oChange = 0;
-        
-        {   // 
-            sort_t m = 0;
-            for (auto& v : a) v.m = m++;
+    {   // 
+        sort_t m = 0;
+        std::size_t o = 0;
+        for (auto& v : a){
+            v.m = m++;
+            #if ORDER//[
+            v.o = o++;
+            #endif//]
+            #if FAT//[
+            for (auto& f : v.f) f = 0;
+            #endif//]
         }
-        
+    }
+    
+    {   // 
+        std::size_t oChange = 0;
         switch (Src){
             case eSrc::Rand:{
                 oChange = Range(Rand);
@@ -84,77 +89,110 @@ void test(eSrc Src, int nTest, int nLoop, int nRepeat)
                 oChange = Range(Rand);
                 break;
             }
-        }
-        
-        {   // 
-            std::size_t o = 0;
-            for (auto& v : a){
-                #if ORDER//[
-                v.o = ++o;
-                #endif//]
-                #if FAT//[
-                for (auto& f : v.f) f = 0;
-                #endif//]
+            default:{
+                break;
             }
         }
-        
-        #if 1//[
-        printf("\n== std::sort\n");
-        for (auto n = nRepeat; n; --n){
-            auto s = a;
-            Lapse l;
-            std::sort(s.begin(), s.end());
-        }
-        #endif//]
-        
-        #if 1//[
-        printf("\n== std::stable_sort\n");
-        for (auto n = nRepeat; n; --n){
-            auto s = a;
-            Lapse l;
-            std::stable_sort(s.begin(), s.end());
-        }
-        #endif//]
-        
-        #if 1//[
-        printf("\n== SetsunaShiki::Sort\n");
-        for (auto n = nRepeat; n; --n){
-            auto s = a;
-            Lapse l;
-            SetsunaShiki::Sort(s.data(), s.size(), oChange);
-        }
-        #endif//]
-        
-        #if 0//[
-        {   // 
-            auto s0 = a;
-            auto s1 = a;
-            auto s2 = a;
-            
-            std::sort(s0.begin(), s0.end());
-            std::stable_sort(s1.begin(), s1.end());
-            SetsunaShiki::Sort(s2.data(), s2.size(), oChange);
-            
-            auto bStrict01 = (memcmp(s0.data(), s1.data(), s1.size() * sizeof(Test)) == 0);
-            auto bStrict12 = (memcmp(s1.data(), s2.data(), s2.size() * sizeof(Test)) == 0);
-            auto bStrict20 = (memcmp(s2.data(), s0.data(), s0.size() * sizeof(Test)) == 0);
-            
-            printf("\n");
-            printf("%d %d %d\n", (s1 == s0), bStrict01, (a == s0));
-            printf("%d %d %d\n", (s2 == s1), bStrict12, (a == s1));
-            printf("%d %d %d\n", (s0 == s2), bStrict20, (a == s2));
-        }
-        #endif//]
+        return oChange;
     }
+}
+
+
+
+void test(eSrc Src, int nTest, int nRepeat)
+{
+    std::random_device Seed;
+    std::mt19937 Rand(Seed());
+    std::uniform_int_distribution<> Range(0, nTest-1);
+    auto a = std::vector<Test>(nTest);
+    
+    static const char* apSrc[eSrc::Num]={
+        "Rand",
+        "Max",
+        "Min",
+        "Nop",
+    };
+    printf("\n\n--- %s %d\n", apSrc[Src], nTest);
+    
+    #if 1//[
+    {   // 
+        double t0 = 0;
+        double t1 = 0;
+        double t2 = 0;
+        
+        for (auto n = nRepeat; n; --n){
+            Auto oChange = init(Src, a, Rand, Range);
+            
+            #if 1//[
+            {   // 
+                auto s = a;
+                auto l = Lapse::Now();
+                std::sort(s.begin(), s.end());
+                t0 += Lapse::Now() - l;
+            }
+            #endif//]
+            
+            #if 1//[
+            {   // 
+                auto s = a;
+                auto l = Lapse::Now();
+                std::stable_sort(s.begin(), s.end());
+                t1 += Lapse::Now() - l;
+            }
+            #endif//]
+            
+            #if 1//[
+            {   // 
+                auto s = a;
+                auto l = Lapse::Now();
+                SetsunaShiki::Sort(s.data(), s.size(), oChange);
+                t2 += Lapse::Now() - l;
+            }
+            #endif//]
+        }
+        
+        printf("\n== std::sort\n");          Lapse::Out(t0 / nRepeat);
+        printf("\n== std::stable_sort\n");   Lapse::Out(t1 / nRepeat);
+        printf("\n== SetsunaShiki::Sort\n"); Lapse::Out(t2 / nRepeat);
+    }
+    #else//][
+    for (auto n = nLoop; n; --n){
+        Auto oChange = init(Src, a, Rand, Range);
+        
+        auto s0 = a;
+        auto s1 = a;
+        auto s2 = a;
+        
+        std::sort(s0.begin(), s0.end());
+        std::stable_sort(s1.begin(), s1.end());
+        SetsunaShiki::Sort(s2.data(), s2.size(), oChange);
+        
+        auto bSimple01 = (s0 == s1);
+        auto bSimple12 = (s1 == s2);
+        auto bSimple20 = (s2 == s0);
+        auto bStrict01 = (memcmp(s0.data(), s1.data(), s1.size() * sizeof(Test)) == 0);
+        auto bStrict12 = (memcmp(s1.data(), s2.data(), s2.size() * sizeof(Test)) == 0);
+        auto bStrict20 = (memcmp(s2.data(), s0.data(), s0.size() * sizeof(Test)) == 0);
+        
+        printf("\n");
+        printf("%d %d %d\n", bSimple01, bStrict01, (a == s0));
+        printf("%d %d %d\n", bSimple12, bStrict12, (a == s1));
+        printf("%d %d %d\n", bSimple20, bStrict20, (a == s2));
+        assert(bSimple12 && bStrict12);
+    }
+    #endif//]
 }
 
 
 
 int main(int argc, char* argv[])
 {
-    eSrc Src = eSrc::Rand;
-    test(Src,     10000, 1, 4);
-    test(Src,   1000000, 1, 4);
-    test(Src, 100000000, 1, 4);
+    test(eSrc::Rand,     10000, 1000);
+    test(eSrc::Rand,   1000000, 1000);
+    test(eSrc::Rand, 100000000, 1000);
+    
+    test(eSrc::Max,  100000000, 1000);
+    test(eSrc::Min,  100000000, 1000);
+    test(eSrc::Nop,  100000000, 1000);
     return 0;
 }
