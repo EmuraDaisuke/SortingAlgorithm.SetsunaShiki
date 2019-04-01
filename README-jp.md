@@ -152,4 +152,6 @@ TestG++.exe
 ソートアルゴリズムには、まだ浪漫が残っています。  
 
 ---
-[颯式（はやてしき）](https://github.com/EmuraDaisuke/SortingAlgorithm.HayateShiki)と[焔式（ほむらしき）](https://github.com/EmuraDaisuke/SortingAlgorithm.HomuraShiki)も併せて読んでいただけると、より楽しめるかも知れません。  
+以下も併せて読んでいただけると、より楽しめるかも知れません。  
+* [颯式（はやてしき）](https://github.com/EmuraDaisuke/SortingAlgorithm.HayateShiki)
+* [焔式（ほむらしき）](https://github.com/EmuraDaisuke/SortingAlgorithm.HomuraShiki)
