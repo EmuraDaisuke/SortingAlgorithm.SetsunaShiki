@@ -153,4 +153,6 @@ The sort algorithm is still romantic.
 <br>
 
 ---
-It may be fun to read [Hayate-Shiki](https://github.com/EmuraDaisuke/SortingAlgorithm.HayateShiki).
+It may be more enjoyable if you read the following together.  
+* [Hayate-Shiki](https://github.com/EmuraDaisuke/SortingAlgorithm.HayateShiki)
+* [Homura-Shiki](https://github.com/EmuraDaisuke/SortingAlgorithm.HomuraShiki)
