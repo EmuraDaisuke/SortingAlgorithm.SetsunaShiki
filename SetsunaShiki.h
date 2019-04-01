@@ -109,3 +109,7 @@ void Sort(T* const aSrc, std::size_t nSrc, std::size_t oChange)
     }
 }
 }
+
+
+
+#undef Auto

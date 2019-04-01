@@ -121,7 +121,7 @@ void test(eSrc Src, int nTest, int nRepeat)
         double t2 = 0;
         
         for (auto n = nRepeat; n; --n){
-            Auto oChange = init(Src, a, Rand, Range);
+            auto oChange = init(Src, a, Rand, Range);
             
             #if 1//[
             {   // 
@@ -157,7 +157,7 @@ void test(eSrc Src, int nTest, int nRepeat)
     }
     #else//][
     for (auto n = nLoop; n; --n){
-        Auto oChange = init(Src, a, Rand, Range);
+        auto oChange = init(Src, a, Rand, Range);
         
         auto s0 = a;
         auto s1 = a;
@@ -188,11 +188,11 @@ void test(eSrc Src, int nTest, int nRepeat)
 int main(int argc, char* argv[])
 {
     test(eSrc::Rand,     10000, 1000);
-    test(eSrc::Rand,   1000000, 1000);
-    test(eSrc::Rand, 100000000, 1000);
+    test(eSrc::Rand,   1000000, 100);
+    test(eSrc::Rand, 100000000, 50);
     
-    test(eSrc::Max,  100000000, 1000);
-    test(eSrc::Min,  100000000, 1000);
-    test(eSrc::Nop,  100000000, 1000);
+    test(eSrc::Max,  100000000, 10);
+    test(eSrc::Min,  100000000, 10);
+    test(eSrc::Nop,  100000000, 10);
     return 0;
 }
