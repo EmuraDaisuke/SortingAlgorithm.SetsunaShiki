@@ -51,11 +51,9 @@ template <class RandomAccessIterator, class Compare> class Private
         {
             if (std::distance(first, last) > 1){
                 if (std::distance(first, change) > 0 && comp(change[0], change[-1])){
-                    Auto iInsert = std::upper_bound(first, change, *change, comp);
-                    InsertLower(change, iInsert);
+                    InsertLower(change, std::upper_bound(first, change, *change, comp));
                 } else if (std::distance(change+1, last) > 0 && comp(change[1], change[0])){
-                    Auto iInsert = std::lower_bound(change+1, last, *change, comp);
-                    InsertUpper(change, iInsert);
+                    InsertUpper(change, std::lower_bound(change+1, last, *change, comp));
                 }
             }
         }
