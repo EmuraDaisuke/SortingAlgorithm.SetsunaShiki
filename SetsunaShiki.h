@@ -1,112 +1,83 @@
 #pragma once
-// Copyright(c) 2019 Emura Daisuke
-// MIT License
 
 
 
-#include <cstddef>
 #include <utility>
+#include <algorithm>
 
 #define Auto    decltype(auto)
 
 
 
 namespace SetsunaShiki {
-namespace Private {
 
 
 
 // 
 
-template <class T> std::size_t SearchLower(T* a, std::size_t n, T& v);
-template <class T> std::size_t SearchUpper(T* a, std::size_t n, T& v);
+template <class RandomAccessIterator>
+inline void sort(RandomAccessIterator const first, RandomAccessIterator const last, RandomAccessIterator const change);
 
-template <class T> void CopyLower(T* p, std::size_t n);
-template <class T> void CopyUpper(T* p, std::size_t n);
+template <class RandomAccessIterator, class Compare>
+inline void sort(RandomAccessIterator const first, RandomAccessIterator const last, RandomAccessIterator const change, Compare comp);
 
 
 
 // 
 
-template <class T>
-std::size_t SearchLower(T* a, std::size_t n, T& v)
+template <class RandomAccessIterator, class Compare> class Private
 {
-    std::size_t o0 = 0;
-    std::size_t o1 = n;
-    while ((o1 - o0) > 1){
-        auto oh = (o1 + o0) >> 1;
-        if (v < a[oh]){
-            o1 = oh;
-        } else {
-            o0 = oh;
+    private:
+        static void InsertLower(RandomAccessIterator b, RandomAccessIterator e)
+        {
+            auto v = std::move(b[0]);
+            while (b-- != e) b[1] = std::move(b[0]);
+            b[1] = std::move(v);
         }
-    }
-    return (v < a[o0])? o0: o1;
-}
-
-
-
-template <class T>
-std::size_t SearchUpper(T* a, std::size_t n, T& v)
-{
-    std::size_t o0 = 0;
-    std::size_t o1 = n;
-    while ((o1 - o0) > 1){
-        auto oh = (o1 + o0) >> 1;
-        if (a[oh] < v){
-            o0 = oh;
-        } else {
-            o1 = oh;
+        
+        
+        
+        static void InsertUpper(RandomAccessIterator b, RandomAccessIterator e)
+        {
+            auto v = std::move(b[0]);
+            while (++b != e) b[-1] = std::move(b[0]);
+            b[-1] = std::move(v);
         }
-    }
-    return o1;
-}
-
-
-
-template <class T>
-void CopyLower(T* p, std::size_t n)
-{
-    auto v = std::move(p[0]);
-    for (; n--; --p) p[0] = std::move(p[-1]);
-    p[0] = std::move(v);
-}
-
-
-
-template <class T>
-void CopyUpper(T* p, std::size_t n)
-{
-    auto v = std::move(p[0]);
-    for (; n--; ++p) p[0] = std::move(p[1]);
-    p[0] = std::move(v);
-}
-}
-
-
-
-// 
-
-template <class T> void Sort(T* const aSrc, std::size_t nSrc, std::size_t oChange);
-
-
-
-template <class T>
-void Sort(T* const aSrc, std::size_t nSrc, std::size_t oChange)
-{
-    using namespace Private;
     
-    if (aSrc && nSrc > 1 && oChange < nSrc){
-        auto nLower = oChange;
-        auto nUpper = nSrc - oChange - 1;
-        if (nLower && aSrc[oChange] < aSrc[oChange-1]){
-            Auto oLower = SearchLower(&aSrc[0], nLower, aSrc[oChange]);
-            CopyLower(&aSrc[oChange], (oChange - oLower));
-        } else if (nUpper && aSrc[oChange+1] < aSrc[oChange]){
-            Auto oUpper = SearchUpper(&aSrc[oChange+1], nUpper, aSrc[oChange]);
-            CopyUpper(&aSrc[oChange], oUpper);
+    
+    
+    public:
+        static void Sort(RandomAccessIterator const first, RandomAccessIterator const last, RandomAccessIterator const change, Compare comp)
+        {
+            Auto nArray = std::distance(first, last);
+            if (nArray > 1){
+                Auto nLower = std::distance(first, change);
+                Auto nUpper = std::distance(change+1, last);
+                if (nLower > 0 && comp(change[0], change[-1])){
+                    Auto iInsert = std::upper_bound(first, change, *change, comp);
+                    InsertLower(change, iInsert);
+                } else if (nUpper > 0 && comp(change[1], change[0])){
+                    Auto iInsert = std::lower_bound(change+1, last, *change, comp);
+                    InsertUpper(change, iInsert);
+                }
+            }
         }
-    }
+};
+
+
+
+template <class RandomAccessIterator>
+inline void sort(RandomAccessIterator const first, RandomAccessIterator const last, RandomAccessIterator const change)
+{
+    SetsunaShiki::sort(first, last, change, std::less<typename std::iterator_traits<RandomAccessIterator>::value_type>());
+}
+
+
+
+template <class RandomAccessIterator, class Compare>
+inline void sort(RandomAccessIterator const first, RandomAccessIterator const last, RandomAccessIterator const change, Compare comp)
+{
+    SetsunaShiki::Private<RandomAccessIterator, Compare>::Sort(first, last, change, comp);
 }
 }
 

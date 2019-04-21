@@ -1,14 +1,16 @@
 
 
 
+//#define NDEBUG
+
 #include <cassert>
 #include <vector>
 #include <random>
 #include <algorithm>
 #include <memory.h>
+#include "./Lapse.h"
 
 #include "./SetsunaShiki.h"
-#include "./Lapse.h"
 
 
 
@@ -46,10 +48,20 @@ bool operator <(const Test& s, const Test& t)
 
 bool operator ==(const Test& s, const Test& t)
 {
+    #if ORDER//[
+    return (s.m == t.m && s.o == t.o);
+    #else//][
     return s.m == t.m;
+    #endif//]
 }
 
 
+
+void dump(std::vector<Test>& a)
+{
+    for (auto& v : a) std::cout << v.m << std::endl;
+    std::cout << std::endl;
+}
 
 std::size_t init(eSrc Src, std::vector<Test>& a, std::mt19937& Rand, std::uniform_int_distribution<>& Range)
 {
@@ -99,7 +111,7 @@ std::size_t init(eSrc Src, std::vector<Test>& a, std::mt19937& Rand, std::unifor
 
 
 
-void test(eSrc Src, int nTest, int nRepeat)
+void test(eSrc Src, int nTest, int nLoop)
 {
     std::random_device Seed;
     std::mt19937 Rand(Seed());
@@ -114,13 +126,13 @@ void test(eSrc Src, int nTest, int nRepeat)
     };
     printf("\n\n--- %s %d\n", apSrc[Src], nTest);
     
-    #if 1//[
+    #if defined(NDEBUG)//[
     {   // 
         double t0 = 0;
         double t1 = 0;
         double t2 = 0;
         
-        for (auto n = nRepeat; n; --n){
+        for (auto n = nLoop; n; --n){
             auto oChange = init(Src, a, Rand, Range);
             
             #if 1//[
@@ -145,15 +157,15 @@ void test(eSrc Src, int nTest, int nRepeat)
             {   // 
                 auto s = a;
                 auto l = Lapse::Now();
-                SetsunaShiki::Sort(s.data(), s.size(), oChange);
+                SetsunaShiki::sort(s.begin(), s.end(), (s.begin() + oChange));
                 t2 += Lapse::Now() - l;
             }
             #endif//]
         }
         
-        printf("\n== std::sort\n");          Lapse::Out(t0 / nRepeat);
-        printf("\n== std::stable_sort\n");   Lapse::Out(t1 / nRepeat);
-        printf("\n== SetsunaShiki::Sort\n"); Lapse::Out(t2 / nRepeat);
+        printf("\n== std::sort\n");          Lapse::Out(t0 / nLoop);
+        printf("\n== std::stable_sort\n");   Lapse::Out(t1 / nLoop);
+        printf("\n== SetsunaShiki::sort\n"); Lapse::Out(t2 / nLoop);
     }
     #else//][
     for (auto n = nLoop; n; --n){
@@ -165,16 +177,18 @@ void test(eSrc Src, int nTest, int nRepeat)
         
         std::sort(s0.begin(), s0.end());
         std::stable_sort(s1.begin(), s1.end());
-        SetsunaShiki::Sort(s2.data(), s2.size(), oChange);
+        SetsunaShiki::sort(s2.begin(), s2.end(), (s2.begin() + oChange));
         
         auto bEqual01 = (s0 == s1);
         auto bEqual12 = (s1 == s2);
         auto bEqual20 = (s2 == s0);
         
+        #if 0//[
         printf("\n");
         printf("%d %d\n", bEqual01, (a == s0));
         printf("%d %d\n", bEqual12, (a == s1));
         printf("%d %d\n", bEqual20, (a == s2));
+        #endif//]
         assert(bEqual12);
     }
     #endif//]
@@ -184,12 +198,21 @@ void test(eSrc Src, int nTest, int nRepeat)
 
 int main(int argc, char* argv[])
 {
+    #if defined(NDEBUG)//[
     test(eSrc::Rand,     10000, 1000);
     test(eSrc::Rand,   1000000, 100);
-    test(eSrc::Rand, 100000000, 50);
+    test(eSrc::Rand, 100000000, 10);
     
     test(eSrc::Max,  100000000, 10);
     test(eSrc::Min,  100000000, 10);
     test(eSrc::Nop,  100000000, 10);
+    #else//][
+    for (int nTest = 1; nTest < 200; ++nTest){
+        test(eSrc::Rand, nTest, 10000);
+        test(eSrc::Max,  nTest, 1);
+        test(eSrc::Min,  nTest, 1);
+        test(eSrc::Nop,  nTest, 1);
+    }
+    #endif//]
     return 0;
 }
