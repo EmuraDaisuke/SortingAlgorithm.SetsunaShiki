@@ -49,14 +49,11 @@ template <class RandomAccessIterator, class Compare> class Private
     public:
         static void Sort(RandomAccessIterator const first, RandomAccessIterator const last, RandomAccessIterator const change, Compare comp)
         {
-            Auto nArray = std::distance(first, last);
-            if (nArray > 1){
-                Auto nLower = std::distance(first, change);
-                Auto nUpper = std::distance(change+1, last);
-                if (nLower > 0 && comp(change[0], change[-1])){
+            if (std::distance(first, last) > 1){
+                if (std::distance(first, change) > 0 && comp(change[0], change[-1])){
                     Auto iInsert = std::upper_bound(first, change, *change, comp);
                     InsertLower(change, iInsert);
-                } else if (nUpper > 0 && comp(change[1], change[0])){
+                } else if (std::distance(change+1, last) > 0 && comp(change[1], change[0])){
                     Auto iInsert = std::lower_bound(change+1, last, *change, comp);
                     InsertUpper(change, iInsert);
                 }
